@@ -5,18 +5,20 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import '../custom-styles.css';
-import { getAllMangas } from '../../api/api';
+import { getPopularMangas } from '../../api/api';
 
 interface BannerItem {
   id: number;
   titulo: string;
-  sinopsis: string;
-  año: number;
-  volumenes: number;
+  fecha: string;
   autor: string;
+  sinopsis: string;
+  volumenes: number;
+  foto_portada: string;
   foto_fondo: string;
   foto_logo: string;
   amazon_link: string;
+  tipo: string;
 }
 
 const Banner: React.FC = () => {
@@ -31,7 +33,7 @@ const Banner: React.FC = () => {
   useEffect(() => {
     const fetchBannerData = async () => {
       try {
-        const mangas = await getAllMangas();
+        const mangas = await getPopularMangas();
         // Usar los primeros 5 mangas para el banner
         setBannerItems(mangas.slice(0, 5));
         setLoading(false);
@@ -108,16 +110,16 @@ const Banner: React.FC = () => {
             
             <div className="banner-content">
               <div className="banner-text-container">
-                {item.foto_logo && !imageErrors.logo[item.id] ? (
+                <div className="banner-logo">
                   <img 
                     src={item.foto_logo} 
                     alt={`${item.titulo} logo`} 
-                    className="banner-logo mb-4"
+                    className="banner-logo h-32 object-contain"
                     onError={() => handleLogoImageError(item.id)}
                   />
-                ) : null}
+                </div>
                 <h1 className="banner-title">{item.titulo}</h1>
-                <p className="banner-description">{item.sinopsis}</p>
+                <p className="banner-description line-clamp-4">{item.sinopsis}</p>
                 
                 <div className="banner-buttons">
                   <Link 

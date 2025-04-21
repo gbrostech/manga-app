@@ -1,13 +1,17 @@
 const fs = require('fs');
 const path = require('path');
-const csv = require('csv-parser');
-const { readMangasFromCSV } = require('./mangasController');
+
+// Function to read data from mangas.json
+const readMangasFromJSON = () => {
+  const rawData = fs.readFileSync(path.join(__dirname, '../data/mangas.json'));
+  return JSON.parse(rawData);
+};
 
 // Obtener todos los autores
 const getAllAuthors = async (req, res) => {
   try {
-    const mangas = await readMangasFromCSV();
-    
+    const mangas = readMangasFromJSON();
+
     // Extraer autores únicos y ordenarlos alfabéticamente
     const uniqueAuthors = [...new Set(mangas.map(manga => manga.autor))].sort();
     
@@ -30,7 +34,7 @@ const getAllAuthors = async (req, res) => {
 // Obtener información de un autor específico
 const getAuthorInfo = async (req, res) => {
   try {
-    const mangas = await readMangasFromCSV();
+    const mangas = readMangasFromJSON();
     const authorName = req.params.name;
     
     // Filtrar mangas por autor
@@ -74,7 +78,7 @@ const searchAuthors = async (req, res) => {
       });
     }
     
-    const mangas = await readMangasFromCSV();
+    const mangas = readMangasFromJSON();
     
     // Extraer autores únicos
     const allAuthors = [...new Set(mangas.map(manga => manga.autor))];
